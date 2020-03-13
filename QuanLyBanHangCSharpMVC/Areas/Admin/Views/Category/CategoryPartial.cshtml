@@ -1,0 +1,13 @@
+﻿@model List<Category>
+
+@foreach (var item in Model)
+{
+    <tr id="row_@item.Id">
+        <td>@item.Name</td>
+        <td><a href="#" class="btn btn-secondary btn-block btnActive" style="width: 100px;" id="btnActive_@item.Id" data-id="@item.Id">@item.CategoryStatus</a></td>
+        <td>
+            <a href="@Url.Action("Edit", new { id = item.Id })" class="btn btn-success"><i class="fa fa-edit"></i>Sửa</a>
+            <a href="#" class="btn btn-danger btnDelete" data-id="@item.Id"><i class="fa fa-times"></i>Xóa</a>
+        </td>
+    </tr>
+}

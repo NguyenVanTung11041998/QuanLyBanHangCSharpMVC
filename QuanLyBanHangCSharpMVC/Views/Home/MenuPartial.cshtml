@@ -1,0 +1,8 @@
+﻿@model List<Category>
+
+@foreach (var item in Model)
+{
+    <li>
+        <a class="color1" href="@Url.Action("Index", "Category", new { id = item.Id })">@item.Name</a>
+    </li>
+}

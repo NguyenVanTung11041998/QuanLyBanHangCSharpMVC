@@ -1,0 +1,110 @@
+﻿@{
+    ViewBag.Title = "Create";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+@model ProductRequest
+@section JsSection {
+    <script type="text/javascript">
+        $(function () {
+            var imagesPreview = function (input, placeToInsertImagePreview) {
+                if (input.files) {
+                    var filesAmount = input.files.length;
+                    for (i = 0; i < filesAmount; i++) {
+                        var reader = new FileReader();
+                        reader.onload = function (event) {
+                            $($.parseHTML('<img class="col-sm-3 mt-1" style="border: 1px solid;" />')).attr('src', event.target.result).appendTo(placeToInsertImagePreview);
+                        }
+                        reader.readAsDataURL(input.files[i]);
+                    }
+                }
+            };
+
+            $('#file').on('change', function () {
+                $(".DisplayImage").html("");
+                imagesPreview(this, '.DisplayImage');
+            });
+        });
+
+        function submitForm() {
+            let price = $("#inputPrice").val();
+            let regex = /[^0-9]/;
+            let checkPrice = regex.test(price.toString());
+            if (checkPrice)
+                $("#message").html("<div class=\"mb-3\">Đơn giá phải là số!</div>");
+            else
+                $("#formProduct").submit();
+        }
+    </script>
+    <script type="text/javascript">CKEDITOR.replace("Description");</script>
+}
+
+@using (Html.BeginForm("Create", "Product", FormMethod.Post, new { enctype = "multipart/form-data", id = "formProduct" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>Sản phẩm</h4>
+        <hr />
+        @Html.ValidationSummary(true)
+        <h3 class="text-danger">@ViewBag.Error</h3>
+        <div class="form-group">
+            <div class="row">
+                <div class="col-sm-6">
+                    @Html.LabelFor(model => model.Name, new { @class = "control-label col-md-6" })
+                    <div class="col-md-8">
+                        @Html.TextBoxFor(model => model.Name, new { @class = "form-control", placeholder = "Tên sản phẩm" })
+                        @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    @Html.LabelFor(model => model.Price, new { @class = "control-label col-md-6" })
+                    <div class="col-md-8">
+                        @Html.TextBoxFor(model => model.Price, new { @class = "form-control", placeholder = "Đơn giá", id = "inputPrice" })
+                        @Html.ValidationMessageFor(model => model.Price, "", new { @class = "text-danger" })
+                        <div id="message"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="row">
+                <div class="col-sm-6">
+                    @Html.LabelFor(model => model.CategoryId, new { @class = "control-label col-md-6" })
+                    <div class="col-md-8">
+                        @Html.DropDownListFor(model => model.CategoryId, ViewBag.Categories as SelectList, new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    @Html.LabelFor(model => model.ProducerId, new { @class = "control-label col-md-6" })
+                    <div class="col-md-8">
+                        @Html.DropDownListFor(model => model.ProducerId, ViewBag.Producers as SelectList, new { @class = "form-control" })
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Description, new { @class = "control-label col-md-6" })
+            <div class="col-md-12">
+                @Html.TextAreaFor(model => model.Description, new { id = "Description", @class = "form-control", style = "height:250px;" })
+                @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.Label("Hình ảnh", new { @class = "control-label col-md-2" })
+            <div class="input-group-text">
+                <input type="file" id="file" name="files" multiple />
+            </div>
+            <div class="DisplayImage row"></div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="button" onclick="submitForm()" value="Thêm mới" class="btn btn-success col-md-2" />
+                @Html.ActionLink("Hủy", "Index", null, new { @class = "btn btn-danger col-md-2" })
+            </div>
+        </div>
+    </div>
+}

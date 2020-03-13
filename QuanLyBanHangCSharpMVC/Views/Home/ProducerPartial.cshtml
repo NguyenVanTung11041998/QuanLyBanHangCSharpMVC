@@ -1,0 +1,18 @@
+﻿@model List<ProducerRequest>
+<div class="content-bottom">
+    <ul>
+        @foreach (var item in Model)
+        {
+            <li><a href="@Url.Action("Index", "Producer", new { id = item.Id })"><img class="image-producer img-responsive" src="@item.Logo.Path" alt=""></a></li>
+        }
+    </ul>
+    <div class="clearfix"> </div>
+</div>
+<style>
+    .image-producer {
+        width: 80%;
+        max-width: 80%;
+        height: 100px;
+        max-height: 100px;
+    }
+</style>

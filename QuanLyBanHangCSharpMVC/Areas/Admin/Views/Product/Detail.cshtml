@@ -1,0 +1,64 @@
+﻿
+@{
+    ViewBag.Title = "Detail";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+@using System.Globalization
+@model ProductRequest
+@{ CultureInfo cul = CultureInfo.GetCultureInfo("vi-VN"); }
+
+<div class="row">
+    <div class="col-sm-4"></div>
+    <div class="col-sm-6"><h2>@Model.Name</h2></div>
+</div>
+<div class="row mt-4">
+    <div class="col-sm-2"></div>
+    <div class="col-sm-4">
+        <span><h4>Đơn giá: @Model.Price.ToString("#,###", cul.NumberFormat) VND</h4></span>
+    </div>
+    <div class="col-sm-4">
+        <span><h4>Số lượng tồn: @Model.AmountProduct</h4></span>
+    </div>
+</div>
+<div class="row mt-3">
+    <div class="col-sm-5"></div>
+    <div class="col-sm-6">
+        <h4><span>Mô tả</span></h4>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-3"></div>
+    <div class="col-sm-6">
+        <h5><span>@Html.Raw(Model.Description)</span></h5>
+    </div>
+</div>
+<div class="row mt-3">
+    <div class="col-sm-5"></div>
+    <div class="col-sm-6">
+        <h4><span>Hình ảnh</span></h4>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-3"></div>
+    <div class="row">
+        @foreach (var item in Model.Images)
+        {
+            <div class="col-sm-3 mt-3 image">
+                <img src="@item.Path" />
+            </div>
+        }
+    </div>
+</div>
+<div class="row">
+    <a href="javascript:history.back()" class="btn btn-outline-primary ml-5">Trở về</a>
+</div>
+
+<style>
+    .image img {
+        height: 150px;
+        max-height: 150px;
+        object-fit: contain;
+        width: 80%;
+        max-width: 80%;
+    }
+</style>

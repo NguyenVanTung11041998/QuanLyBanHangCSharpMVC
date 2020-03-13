@@ -1,0 +1,124 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+@using System.Globalization
+@model BillDto
+@{ CultureInfo cul = CultureInfo.GetCultureInfo("vi-VN"); }
+@section JsSection {
+    <script type="text/javascript">
+        $(".btnCancel").click(function () {
+            if (confirm("Bạn có muốn hủy phiếu hay không?")) {
+                var id = $("#billId").val();
+                $.ajax({
+                    method: "Post",
+                    url: "@Url.Action("RejectBill", "Bill")",
+                    data: { id },
+                    success: function (result) {
+                        if (result > 0) {
+                            location.href = "@Url.Action("Index", "Bill")";
+                        }
+                    }
+                });
+            }
+        });
+
+        $(".btnAccept").click(function () {
+            var id = $("#billId").val();
+            $.ajax({
+                method: "Post",
+                url: "@Url.Action("ConfirmBill", "Bill")",
+                data: { id },
+                success: function (result) {
+                    if (result > 0) {
+                        location.href = "@Url.Action("Index", "Bill")";
+                    }
+                    else {
+                        toastr.error('@TempData["BillStatus"]');
+                        @{ TempData["BillStatus"] = ""; }
+                    }
+                }
+            });
+        });
+
+        $(".btnPay").click(function () {
+            var id = $("#billId").val();
+            $.ajax({
+                method: "Post",
+                url: "@Url.Action("PayBill", "Bill")",
+                data: { id },
+                success: function (result) {
+                    if (result > 0) {
+                        location.href = "@Url.Action("Index", "Bill")";
+                    }
+                }
+            });
+        });
+    </script>
+}
+
+<div class="row">
+    <div class="col-lg-12">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <i class="fa fa-dashboard"></i>  <a href="#">Dashboard</a>
+            </li>
+            <li class="active breadcrumb-item">
+                <i class="fa fa-file"></i> Hóa đơn
+            </li>
+        </ol>
+        @Html.HiddenFor(model => model.Id, new { id = "billId" })
+        <div class="clearfix"></div>
+    </div>
+</div>
+<div style="text-align: center;">
+    <h3>Họ tên khách hàng: @Model.UserName</h3>
+    <h5>Địa chỉ: @Model.Address</h5>
+    <h5>Số điện thoại: @Model.Phone</h5>
+    <h5>Ngày tạo: @Model.CreationTime.ToString("dd/MM/yyyy")</h5>
+    <h5>Thành Tiền: @Model.TotalPrice.ToString("#,###", cul.NumberFormat) VND</h5>
+    <h5>VAT: @Model.VAT.ToString("#,###", cul.NumberFormat) VND</h5>
+    <h5>Tổng: @((Model.TotalPrice + Model.VAT).ToString("#,###", cul.NumberFormat)) VND</h5>
+</div>
+<div class="row">
+    <div class="col-lg-12 mt-3" id="table_data">
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>Tên sản phẩm</th>
+                        <th>Đơn giá</th>
+                        <th>Số lượng</th>
+                    </tr>
+                </thead>
+                <tbody id="dataTable">
+                    @foreach (var item in Model.BillInfos)
+                    {
+                        <tr>
+                            <td><a href="@Url.Action("Detail", "Product", new { id = item.ProductId })">@item.ProductName</a></td>
+                            <td>@item.Price.ToString("#,###", cul.NumberFormat) VND</td>
+                            <td>@item.QuantityPurchased</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<div class="form-group">
+    <div class="col-md-offset-2 col-md-10">
+        @if (Model.BillStatus == BillStatus.Confirmed)
+        {
+            <input type="button" value="Đã thanh toán" class="btn btn-secondary btnPay col-md-2" />
+        }
+        @if (Model.BillStatus != BillStatus.Confirmed && Model.BillStatus != BillStatus.Cancel && Model.BillStatus != BillStatus.AlreadyPaid)
+        {
+            <input type="button" value="Xử lý" class="btn btn-success btnAccept col-md-2" />
+        }
+        @if (Model.BillStatus != BillStatus.Cancel && Model.BillStatus != BillStatus.AlreadyPaid)
+        {
+            <input type="button" value="Hủy phiếu" class="btn btn-primary btnCancel col-md-2" />
+        }
+        @Html.ActionLink("Trở về", "Index", "Bill", null, new { @class = "btn btn-danger col-md-2" })
+    </div>
+</div>

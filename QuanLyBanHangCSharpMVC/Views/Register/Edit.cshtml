@@ -1,0 +1,65 @@
+﻿@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@model AccountUserDto
+@section JsSection {
+    <script type="text/javascript">
+        function sumbitForm() {
+            let password = $("#inputNewPassword").val();
+            let confirmPassword = $("#inputConfirmPassword").val();
+            if (password != confirmPassword)
+                $("#message").html("<div style=\"color: red; margin-bottom: 10px;\">Mật khẩu không khớp!</div>");
+            else
+                $("#formRegister").submit();
+        }
+    </script>
+}
+
+<div class="container">
+    <div class=" register">
+        <h1>Chỉnh sửa tài khoản</h1>
+        @using (Html.BeginForm("Edit", "Register", FormMethod.Post, new { id = "formRegister" }))
+        {
+            <div class="col-md-6 register-top-grid">
+                <h3>Thông tin cá nhân</h3>
+                @Html.HiddenFor(model => model.Id)
+                <div>
+                    <span>Họ tên</span>
+                    @Html.TextBoxFor(model => model.Name, new { placeholder = "Họ tên", required = "required", Value = Model.Name })
+                </div>
+                <div>
+                    <span>Số điện thoại</span>
+                    @Html.TextBoxFor(model => model.Phone, new { placeholder = "Số điện thoại", required = "required", Value = Model.Phone })
+                </div>
+                <div>
+                    <span>Địa chỉ</span>
+                    @Html.TextBoxFor(model => model.Address, new { placeholder = "Địa chỉ", required = "required", Value = Model.Address })
+                </div>
+
+            </div>
+            <div class="col-md-6 register-bottom-grid">
+                <h3>Thông tin tài khoản</h3>
+                <div>
+                    <span>Email đăng nhập</span>
+                    @Html.TextBoxFor(model => model.Email, new { type = "email", placeholder = "Email đăng nhập", required = "required", @readonly = "readonly" })
+                </div>
+                <div>
+                    <span>Mật khẩu cũ</span>
+                    @Html.PasswordFor(model => model.Password, new { placeholder = "Mật khẩu cũ", id = "inputPassword" })
+                </div>
+                <div>
+                    <span>Mật khẩu mới</span>
+                    @Html.PasswordFor(model => model.NewPassword, new { placeholder = "Mật khẩu mới", id = "inputNewPassword" })
+                </div>
+                <div>
+                    <span>Nhật lại mật khẩu</span>
+                    <input type="password" id="inputConfirmPassword" name="check_password" placeholder="Nhập lại mật khẩu" value="">
+                </div>
+                <div id="message"></div>
+                <input type="button" onclick="sumbitForm()" value="Cập nhật">
+            </div>
+            <div class="clearfix"> </div>
+        }
+    </div>
+</div>

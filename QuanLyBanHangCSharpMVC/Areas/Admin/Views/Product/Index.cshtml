@@ -1,0 +1,158 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+@model List<Product>
+@section JsSection {
+    <script type="text/javascript">
+        $(".btnActive").click(function (e) {
+            var btn = $(this);
+            var id = btn.data("id");
+            $.ajax({
+                url: "@Url.Action("ChangeStatus", "Product")",
+                method: "Post",
+                data: { id: id },
+                dataType: "Json",
+                success: function (status) {
+                    if (status)
+                        btn.text("Active");
+                    else
+                        btn.text("Deactive");
+                    toastr.success("Thay đổi trạng thái thành công!");
+                }
+            });
+        });
+
+        $("tbody").delegate(".btnDelete", "click", function (e) {
+            e.preventDefault();
+            if (confirm("Bạn có muốn xóa bản ghi này không?")) {
+                var btn = $(this);
+                var id = btn.data("id");
+                $.ajax({
+                    url: "@Url.Action("Delete", "Product")",
+                    method: 'Post',
+                    data: { id: id },
+                    success: function (result) {
+                        if (result == 2) {
+                            $("[id='row_" + id + "']").remove();
+                            toastr.success("Xóa sản phẩm thành công!");
+                        }
+                        else if (result == 3) {
+                            var btnProductStatus = $("#btnActive_" + id);
+                            btnProductStatus.text("Deactive");
+                            toastr.success("Đã khóa sản phẩm!");
+                        }
+                        else
+                            toastr.success("Không tồn tại sản phẩm cần xóa!");
+                    }
+                });
+            }
+        });
+
+        $("body").delegate(".btnPage", "click", function (e) {
+            e.preventDefault();
+            var btn = $(this);
+            let currentPage = btn.data("page");
+            let search = $("#search").val();
+            $.ajax({
+                method: "Get",
+                url: "@Url.Action("ProductPartial", "Product")",
+                data: { search, currentPage },
+                success: function (result) {
+                    $("#dataTable").html(result);
+                    $(".pageGroup a").removeClass("page");
+                    btn.addClass("page");
+                }
+            });
+        });
+
+        $(document).ready(function() {
+            if('@TempData["SaveProduct"]')
+            {
+                toastr.success('@TempData["SaveProduct"]');
+                @{ TempData["SaveProduct"] = ""; }
+            }
+        });
+
+        $("#btnSearch").click(function () {
+            let search = $("#search").val();
+            $.ajax({
+                method: "Get",
+                url: "@Url.Action("ProductPartial", "Product")",
+                data: { search },
+                success: function (result) {
+                    $("#dataTable").html(result);
+                }
+            });
+        });
+
+        $(document).ready(function () {
+            $(".btnPage").first().addClass("page");
+        });
+    </script>
+    <style>
+        .page {
+            background-color: #007bff;
+            color: white;
+        }
+    </style>
+}
+
+<div class="row">
+    <div class="col-lg-12">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <i class="fa fa-dashboard"></i>  <a href="@Url.Action("Index")">Dashboard</a>
+            </li>
+            <li class="active breadcrumb-item">
+                <i class="fa fa-file"></i> Sản phẩm
+            </li>
+        </ol>
+        <div class="row mt-3 mb-3">
+            <div class="col-sm-1"><span>Từ khóa:</span></div>
+            <div class="col-lg-3">
+                <input type="text" id="search" class="form-control col-sm-12" />
+            </div>
+            <div class="col-lg-8">
+                <div class="row">
+                    <div class="col-lg-2">
+                        <button id="btnSearch" type="button" class="btn btn-primary col-sm-12">Tìm kiếm</button>
+                    </div>
+                    <div class="col-lg-2">
+                        <a href="@Url.Action("Create", "Product")" class="btn btn-success col-sm-12">Thêm mới</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-12" id="table_data">
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>Tên sản phẩm</th>
+                        <th>Ngày cập nhật</th>
+                        <th>Đơn giá</th>
+                        <th>Tình trạng</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="dataTable">
+                    @Html.Partial("ProductPartial", Model)
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<div class="row" style="margin-bottom: 10px;">
+    <div class="col-sm-12 pageGroup">
+        @for (int i = 0; i < (int)ViewBag.PageNumber; ++i)
+        {
+            <a href="#" data-page="@(i + 1)" class="btn btn-outline-primary btnPage" style="border: 1px solid;">@(i + 1)</a>
+        }
+    </div>
+</div>

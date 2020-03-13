@@ -1,0 +1,50 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@model QuanLyBanHangCSharpMVC.Areas.Admin.Data.AccountDto
+@section JsSection {
+    <script type="text/javascript">
+        $(document).ready(function() {
+            if('@TempData["AddAcountSuccess"]')
+            {
+                toastr.success('@TempData["AddAcountSuccess"]');
+                @{ TempData["AddAcountSuccess"] = ""; }
+            }
+            else if('@TempData["ResetPassword"]')
+            {
+                toastr.success('@TempData["ResetPassword"]');
+                @{ TempData["ResetPassword"] = ""; }
+            }
+        });
+    </script>
+}
+
+<div class="container">
+    <div class="account">
+        <h1>Đăng nhập</h1>
+        <div class="account-pass">
+            <div class="col-sm-2"></div>
+            <div class="col-sm-8 account-top">
+                @using (Html.BeginForm("Index", "Login", FormMethod.Post))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.ValidationSummary(false, "", "error")
+                    <div>
+                        <span>Tên đăng nhập</span>
+                        @Html.TextBoxFor(model => Model.Email, new { placeholder = "Tên đăng nhập", required = "required" })
+                    </div>
+                    <div>
+                        <span>Mật khẩu</span>
+                        @Html.PasswordFor(model => model.Password, new { placeholder = "Mật khẩu", required = "required" })
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 150px;">Đăng nhập</button>
+                    <a href="@Url.Action("Index", "Register")" class="btn btn-warning" style="width: 150px;">Đăng ký</a>
+                    <a href="@Url.Action("Index", "ForgetPassword")" class="btn btn-success" style="width: 150px;">Quên mật khẩu</a>
+                }
+            </div>
+            <div class="clearfix"> </div>
+        </div>
+    </div>
+</div>

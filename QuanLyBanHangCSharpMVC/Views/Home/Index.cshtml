@@ -1,0 +1,45 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section JsSection {
+    <script type="text/javascript">
+         $(document).ready(function() {
+            if('@TempData["EditAccount"]')
+            {
+                toastr.success('@TempData["EditAccount"]');
+                @{ TempData["EditAccount"] = ""; }
+            }
+        });
+    </script>
+}
+
+<div class="banner">
+    <div class="container">
+        <script src="js/responsiveslides.min.js"></script>
+        <script>
+            $(function () {
+                $("#slider").responsiveSlides({
+                    auto: true,
+                    nav: true,
+                    speed: 500,
+                    namespace: "callbacks",
+                    pager: true,
+                });
+            });
+        </script>
+    </div>
+</div>
+
+<!--content-->
+<div class="content">
+    <div class="container">
+        <div class="content-top">
+            <h1>Sản phẩm mới</h1>
+            @Html.Action("NewProductPartial", "Home")
+        </div>
+    </div>
+    <div style="text-align: center;"><h3><b>Danh sách hãng sản xuất</b></h3></div>
+    @Html.Action("ProducerPartial", "Home")
+</div>

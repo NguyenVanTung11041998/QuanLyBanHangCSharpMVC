@@ -1,0 +1,10 @@
+﻿@model List<Account>
+@foreach (var item in Model)
+{
+    <tr id="row_@item.Id">
+        <td>@item.User.Name</td>
+        <td>@item.User.Address</td>
+        <td>@item.User.Phone</td>
+        <td><button data-id="@item.UserId" class="btn btnView btn-outline-success">Xem</button></td>
+    </tr>
+}

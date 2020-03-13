@@ -1,0 +1,136 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@model List<CartDto>
+@{ var account = (Account)Session[Constant.UserCustomerSession]; }
+@section JsSection {
+    <script type="text/javascript">
+        $(document).ready(function() {
+            if ('@TempData["SaveCart"]') {
+                toastr.success('@TempData["SaveCart"]');
+                @{ TempData["SaveCart"] = ""; }
+            }
+            else if ('@TempData["DeleteCart"]') {
+                toastr.success('@TempData["DeleteCart"]');
+                @{ TempData["DeleteCart"] = ""; }
+            }
+            else if ('@TempData["Order"]')
+            {
+                toastr.success('@TempData["Order"]');
+                @{ TempData["Order"] = ""; }
+            }
+        });
+        $('body').delegate('.close-button', 'click', function (c) {
+            if (confirm("Bạn có muốn xóa sản phẩm này khỏi giỏ hàng không?")) {
+                var id = $(this).data("id");
+                $.ajax({
+                    method: "Post",
+                    url: "@Url.Action("Delete", "Cart")",
+                    data: { id },
+                    success: function (result) {
+                        if (result > 0)
+                            location.href = "@Url.Action("Index", "Cart", new { id = account.Id })";
+                        else
+                            toastr.success("Xóa sản phẩm thất bại!");
+                    }
+                });
+            }
+        });
+        $('body').delegate('.btnEdit', 'click', function (c) {
+            var id = $(this).data("id");
+            var quantity = $("#quantity_" + id).val();
+            var productId = $(this).data("productid");
+            if (!quantity) {
+                toastr.success("Cập nhật thất bại! Bạn chưa nhập số lượng!");
+                return;
+            }
+            $.ajax({
+                method: "Post",
+                url: "@Url.Action("Edit", "Cart")",
+                data: { id, productId, quantity },
+                success: function (result) {
+                    if (result > 0)
+                        location.href = "@Url.Action("Index", "Cart", new { id = account.Id })";
+                    else
+                        toastr.success("Cập nhật thất bại!");
+                }
+            })
+        });
+        $(".order").click(function (e) {
+            e.preventDefault();
+            $.ajax({
+                method: "Post",
+                url: "@Url.Action("Order", "Cart")",
+                success: function (res) {
+                    if (res == 0)
+                        toastr.error("Giỏ hàng trống không thể đặt hàng!");
+                    else
+                        location.href = "@Url.Action("Index", "Cart", new { id = account.Id })";
+                }
+            });
+        });
+    </script>
+}
+
+@{ CultureInfo cul = CultureInfo.GetCultureInfo("vi-VN"); }
+<div class="container">
+    <div class="check">
+        <h1>Giỏ hàng (@ViewBag.Total)</h1>
+        <div class="col-md-9 cart-items">
+            @foreach (var item in Model)
+            {
+                <div class="cart-header_@item.Id" style="position: relative;">
+                    <div class="close-button" data-id="@item.Id"></div>
+                    <div class="cart-sec simpleCart_shelfItem">
+                        <div class="cart-item cyc">
+                            <img src="@item.Image.Path" class="img-responsive" alt="@item.ProductName" />
+                        </div>
+                        <div class="cart-item-info">
+                            <h3>
+                                <a href="@Url.Action("Index", "Product", new { id = item.ProductId })">@item.ProductName</a>
+                                <span>Đơn giá: @((item.Price / item.QuantityPurchased).ToString("#,###", cul.NumberFormat)) VND</span>
+                            </h3>
+                            <div>
+                                <ul class="qty">
+                                    <li><p>Số lượng: @item.QuantityPurchased</p></li>
+                                    <li><p>Thành tiền: @item.Price.ToString("#,###", cul.NumberFormat) VND</p></li>
+                                </ul>
+                            </div>
+                            <div class="row" style="margin-left: 0; margin-top: 5px;">
+                                <div class="col-11">
+                                    <button class="btn-success btnEdit" data-id="@item.Id" data-productid="@item.ProductId">Sửa số lượng</button>
+                                    <span><input style="width: 50px;" type="number" min="1" id="quantity_@item.Id" value="@item.QuantityPurchased" /></span>
+                                </div>
+                                <div class="clearfix"></div>
+                            </div>
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                </div>
+            }
+        </div>
+        <div class="col-md-3 cart-total">
+            <a class="continue" href="@Url.Action("Index", "Home")">Tiếp tục mua hàng</a>
+            <div class="price-details">
+                <h3>Chi tiết đơn hàng</h3>
+                <span>Tổng tiền hàng</span>
+                <span class="total1">@(ViewBag.TotalPrice > 0 ? ViewBag.TotalPrice.ToString("#,###", cul.NumberFormat) : 0) VND</span>
+                <span>Giảm giá</span>
+                <span class="total1">---</span>
+                <span>Phí ship(10%)</span>
+                <span class="total1">@(ViewBag.TotalPrice > 0 ? (ViewBag.TotalPrice * 0.1).ToString("#,###", cul.NumberFormat) : 0) VND</span>
+                <div class="clearfix"></div>
+            </div>
+            <ul class="total_price">
+                <li class="last_price"> <h4>Tổng tiền</h4></li>
+                <li class="last_price"><span>@(ViewBag.TotalPrice > 0 ? (ViewBag.TotalPrice + ViewBag.TotalPrice * 0.1).ToString("#,###", cul.NumberFormat) : 0) VND</span></li>
+            </ul>
+            <div class="clearfix"> </div>
+            <div class="clearfix"></div>
+            <a class="order" href="#">Đặt hàng</a>
+        </div>
+        <div class="clearfix"> </div>
+    </div>
+</div>

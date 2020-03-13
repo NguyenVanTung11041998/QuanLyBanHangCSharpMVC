@@ -1,0 +1,194 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+@model List<Account>
+@section JsSection {
+    <script type="text/javascript">
+        $("tbody").delegate(".btnView", "click", function () {
+            let btn = $(this);
+            let userId = btn.data("id");
+            $.ajax({
+                method: "Post",
+                url: "@Url.Action("GetUserInfo", "User")",
+                data: { userId },
+                success: function (result) {
+                    if (result.user) {
+                        $("#userName").html(result.user.Name);
+                        $("#addressUser").html(result.user.Address);
+                        $("#phoneUser").html(result.user.Phone);
+                        $("#emailUser").html(result.user.Email);
+                        let btn = $("#btnChangeStatus");
+                        if (result.user.AccountStatus == 1)
+                            btn.text("Block Account");
+                        else
+                            btn.text("Active Account");
+                        $("#dialogUser").show();
+                    }
+                }
+            });
+        });
+
+        $("body").delegate(".btnPage", "click", function (e) {
+            e.preventDefault();
+            var btn = $(this);
+            let currentPage = btn.data("page");
+            let search = $("#search").val();
+            $.ajax({
+                method: "Get",
+                url: "@Url.Action("UserPartial", "User")",
+                data: { search, currentPage },
+                success: function (result) {
+                    $("#userTable").html(result);
+                    $(".pageGroup a").removeClass("page");
+                    btn.addClass("page");
+                }
+            });
+        });
+
+        $("#closeFormUser").click(function () {
+            $("#dialogUser").hide();
+        });
+
+        $(".btnCancel").click(function () {
+            $("#dialogUser").hide();
+        });
+
+        $("#btnSearch").click(function () {
+            let search = $("#search").val();
+            $.ajax({
+                method: "Get",
+                url: "@Url.Action("UserPartial", "User")",
+                data: { search },
+                success: function (result) {
+                    $("#userTable").html(result);
+                }
+            });
+        });
+
+        $("#btnChangeStatus").click(function () {
+            let email = $("#emailUser").html();
+            $.ajax({
+                method: "POST",
+                url: "@Url.Action("ChangeAccountStatus", "User")",
+                data: { email },
+                success: function (result) {
+                    $("#dialogUser").hide();
+                    if (result)
+                        toastr.success('Thay đổi trạng thái thành công!');
+                    else
+                        toastr.success('Thay đổi trạng thái thất bại!');
+                }
+            });
+        });
+
+        $(document).ready(function () {
+            $(".btnPage").first().addClass("page");
+        });
+    </script>
+}
+<!-- Breadcrumbs-->
+<ol class="breadcrumb">
+    <li class="breadcrumb-item">
+        @Html.ActionLink("Users", "Index")
+    </li>
+    <li class="breadcrumb-item active">Overview</li>
+</ol>
+
+<!-- DataTables Example -->
+<div class="card mb-3">
+    <div class="card-header">
+        <i class="fas fa-table"></i>
+        Danh sách user
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <div class="row mb-3">
+                <div class="col-lg-1"><span>Từ khóa: </span></div>
+                <div class="col-lg-2">
+                    <input id="search" />
+                </div>
+                <div class="col-lg-4">
+                    <button id="btnSearch" type="button">Tìm kiếm</button>
+                </div>
+            </div>
+            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>Họ tên</th>
+                        <th>Địa chỉ</th>
+                        <th>Số điện thoại</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="userTable">
+                    @Html.Partial("UserPartial", Model)
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-sm-12 pageGroup">
+            @for (int i = 0; i < (int)ViewBag.PageNumber; ++i)
+            {
+                <a href="#" data-page="@(i + 1)" class="btn btn-outline-primary btnPage" style="border: 1px solid;">@(i + 1)</a>
+            }
+        </div>
+    </div>
+    <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>
+    <div class="modal-user-dialog">
+        <dialog id="dialogUser">
+            <button id="closeFormUser" class="close" type="button" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">×</span>
+            </button>
+            <div class="row user-info">
+                <div class="col-lg-4"></div>
+                <h4>Thông tin user</h4>
+            </div>
+            <div class="row mt-2">
+                <div class="col-lg-2"></div>
+                <div class="col-lg-4"><span>Họ tên:</span></div>
+                <div class="col-lg-6"><span id="userName"></span></div>
+            </div>
+            <div class="row mt-2">
+                <div class="col-lg-2"></div>
+                <div class="col-lg-4"><span>Đia chỉ:</span></div>
+                <div class="col-lg-6"><span id="addressUser"></span></div>
+            </div>
+            <div class="row mt-2">
+                <div class="col-lg-2"></div>
+                <div class="col-lg-4"><span>Số điện thoại:</span></div>
+                <div class="col-lg-6"><span id="phoneUser"></span></div>
+            </div>
+            <div class="row mt-2">
+                <div class="col-lg-2"></div>
+                <div class="col-lg-4"><span>Email:</span></div>
+                <div class="col-lg-6"><span id="emailUser"></span></div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-lg-2"></div>
+                <div class="col-lg-10">
+                    <button id="btnChangeStatus" class="btn btn-danger col-sm-5">Block Account</button>
+                    <button class="btn btn-default btnCancel col-sm-5">Cancel</button>
+                </div>
+            </div>
+        </dialog>
+    </div>
+</div>
+<style>
+    .modal-user-dialog {
+        position: fixed;
+        top: 25%;
+        left: 40%;
+    }
+
+    .user-info {
+        width: 500px;
+    }
+
+    .page {
+        background-color: #007bff;
+        color: white;
+    }
+</style>
