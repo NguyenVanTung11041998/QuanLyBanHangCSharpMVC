@@ -7,9 +7,11 @@ namespace Models.DAO
     public class AccountDAO
     {
         private QuanLyBanHangCSharpDbContext dbContext = new QuanLyBanHangCSharpDbContext();
-        public async Task<Account> LoginAsync(string email, string password)
+        public async Task<Account> LoginAsync(string email, string password, bool isAdminOrManager = true)
         {
-            return await dbContext.Accounts.FirstOrDefaultAsync(x => x.Email == email && x.Password == password);
+            if (isAdminOrManager)
+                return await dbContext.Accounts.FirstOrDefaultAsync(x => x.Email == email && x.Password == password && x.AccountStatus == AccountStatus.Active && (x.AccountRole == AccountRole.Admin || x.AccountRole == AccountRole.Manager));
+            return await dbContext.Accounts.FirstOrDefaultAsync(x => x.Email == email && x.Password == password && x.AccountStatus == AccountStatus.Active && x.AccountRole == AccountRole.User);
         }
 
         public async Task<Account> GetAccountByIdAsync(long id)

@@ -1,4 +1,5 @@
 ﻿using System.Data.Entity;
+using System.Data.Entity.SqlServer;
 
 namespace Models.EntityFrameworkCore
 {
@@ -6,7 +7,7 @@ namespace Models.EntityFrameworkCore
     {
         public QuanLyBanHangCSharpDbContext() : base("name=QuanLyBanHangCSharpMVC")
         {
-            var ensureDLLIsCopied = System.Data.Entity.SqlServer.SqlProviderServices.Instance;
+            var ensureDLLIsCopied = SqlProviderServices.Instance;
         }
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<Account> Accounts { get; set; }

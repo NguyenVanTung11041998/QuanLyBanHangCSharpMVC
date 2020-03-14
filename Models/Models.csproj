@@ -192,6 +192,7 @@
     <Compile Include="DAO\CategoryDAO.cs" />
     <Compile Include="DAO\ProducerDAO.cs" />
     <Compile Include="DAO\ProductDAO.cs" />
+    <Compile Include="DAO\StatisticalDAO.cs" />
     <Compile Include="DAO\UserDAO.cs" />
     <Compile Include="DTO\AccountUserDto.cs" />
     <Compile Include="DTO\BillDto.cs" />
@@ -202,6 +203,7 @@
     <Compile Include="DTO\CategoryDto.cs" />
     <Compile Include="DTO\CategoryProducerDto.cs" />
     <Compile Include="DTO\Image.cs" />
+    <Compile Include="DTO\PriceDto.cs" />
     <Compile Include="DTO\ProducerDto.cs" />
     <Compile Include="DTO\ProducerRequest.cs" />
     <Compile Include="DTO\ProductAndRelated.cs" />

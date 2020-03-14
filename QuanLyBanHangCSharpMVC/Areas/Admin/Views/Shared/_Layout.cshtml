@@ -114,6 +114,12 @@
                     <span>Hóa đơn</span>
                 </a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link" href="@Url.Action("Index", "Statistical")">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Thống kê</span>
+                </a>
+            </li>
         </ul>
         <div id="content-wrapper">
             <div class="container-fluid">
@@ -164,6 +170,7 @@
     <!-- Core plugin JavaScript-->
     <script src="~/Content/Admin/vendor/jquery-easing/jquery.easing.min.js"></script>
     <script src="~/Content/Admin/js/sb-admin.min.js"></script>
+    <script src="~/Scripts/canvas.js"></script>
     @RenderSection("JsSection", false)
 </body>
 </html>

@@ -20,7 +20,7 @@ namespace QuanLyBanHangCSharpMVC.Controllers
         public async Task<ActionResult> Index(AccountDto account)
         {
             string password = PasswordMd5.HashPassword(account.Password);
-            Account accountLogin = await accountDAO.LoginAsync(account.Email, password);
+            Account accountLogin = await accountDAO.LoginAsync(account.Email, password, false);
             if (accountLogin != null)
             {
                 Session.Add(Constant.UserCustomerSession, accountLogin);
