@@ -157,7 +157,9 @@ namespace Models.DAO
                 Id = product.Id,
                 Name = product.Name,
                 Price = product.Price,
-                Images = assets
+                Images = assets,
+                CategoryId = product.CategoryId,
+                ProducerId = product.ProducerId
             };
         }
 
