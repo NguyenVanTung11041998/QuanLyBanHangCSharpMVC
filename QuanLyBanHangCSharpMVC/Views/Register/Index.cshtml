@@ -4,12 +4,27 @@
 }
 @model UserDto
 @section JsSection {
+    <style>
+        #message ul {
+            list-style: none;
+            color: red;
+            padding-bottom: 10px;
+        }
+    </style>
     <script type="text/javascript">
         function sumbitForm() {
             let password = $("#inputPassword").val();
             let confirmPassword = $("#inputConfirmPassword").val();
-            if (password != confirmPassword)
+            let email = $("#txtEmail").val();
+            let name = $("#txtName").val();
+            if (!email || !name)
+                $("#message").html("<div style=\"color: red; margin-bottom: 10px;\">Email hoặc họ tên không được để trống!</div>");
+            else if (password.length < 6)
+                $("#message").html("<div style=\"color: red; margin-bottom: 10px;\">Mật khẩu phải ít nhất 6 ký tự!</div>");
+            else if (password != confirmPassword)
                 $("#message").html("<div style=\"color: red; margin-bottom: 10px;\">Mật khẩu không khớp!</div>");
+            else if (!password.trim() || !confirmPassword.trim())
+                $("#message").html("<div style=\"color: red; margin-bottom: 10px;\">Mật khẩu không được để trống!</div>");
             else
                 $("#formRegister").submit();
         }
@@ -25,7 +40,7 @@
                 <h3>Thông tin cá nhân</h3>
                 <div>
                     <span>Họ tên</span>
-                    @Html.TextBoxFor(model => model.Name, new { placeholder = "Họ tên", required = "required" })
+                    @Html.TextBoxFor(model => model.Name, new { id = "txtName", placeholder = "Họ tên", required = "required" })
                 </div>
                 <div>
                     <span>Số điện thoại</span>
@@ -33,7 +48,7 @@
                 </div>
                 <div>
                     <span>Địa chỉ</span>
-                    @Html.TextBoxFor(model => model.Phone, new { placeholder = "Địa chỉ", required = "required" })
+                    @Html.TextBoxFor(model => model.Address, new { placeholder = "Địa chỉ", required = "required" })
                 </div>
 
             </div>
@@ -41,7 +56,7 @@
                 <h3>Thông tin tài khoản</h3>
                 <div>
                     <span>Email đăng nhập</span>
-                    @Html.TextBoxFor(model => model.Email, new { type = "email", placeholder = "Email đăng nhập", required = "required" })
+                    @Html.TextBoxFor(model => model.Email, new { id = "txtEmail", type = "email", placeholder = "Email đăng nhập", required = "required" })
                 </div>
                 <div>
                     <span>Mật khẩu</span>
@@ -50,6 +65,9 @@
                 <div>
                     <span>Nhật lại mật khẩu</span>
                     <input type="password" id="inputConfirmPassword" name="check_password" placeholder="Nhập lại mật khẩu" value="">
+                </div>
+                <div id="message">
+                    @Html.ValidationSummary()
                 </div>
                 <input type="button" onclick="sumbitForm()" value="Đăng ký">
                 <a href="@Url.Action("Index", "Login")">Đăng nhập</a>
