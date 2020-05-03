@@ -1,9 +1,5 @@
 ﻿using Models.DAO;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using System.Web;
 using System.Web.Mvc;
 
 namespace QuanLyBanHangCSharpMVC.Controllers
@@ -15,7 +11,10 @@ namespace QuanLyBanHangCSharpMVC.Controllers
         private ProducerDAO producerDAO = new ProducerDAO();
         public async Task<ActionResult> Index()
         {
-            return View();
+            return await Task.Run(() =>
+            {
+                return View();
+            });
         }
 
         public ActionResult MenuPartial()

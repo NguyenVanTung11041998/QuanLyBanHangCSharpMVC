@@ -2290,6 +2290,7 @@
     <Content Include="Views\Cart\Index.cshtml" />
     <Content Include="Views\Register\Edit.cshtml" />
     <Content Include="Views\ForgetPassword\Index.cshtml" />
+    <Content Include="Views\Product\GetProductByKeyword.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -33,10 +33,11 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
         <div class="header-top">
             <div class="container">
                 <div class="search">
-                    <form>
-                        <input type="text" value="Search " onfocus="this.value = '';" onblur="if (this.value == '') {this.value = 'Search';}">
+                    @using (Html.BeginForm("GetProductByKeyword", "Product", FormMethod.Get))
+                    {
+                        <input type="text" name="search" onfocus="this.value = '';" onblur="if (this.value == '') {this.value = 'Tìm kiếm';}">
                         <input type="submit" value="Go">
-                    </form>
+                    }
                 </div>
                 <div class="header-left">
                     @{ var account = (Account)Session[Constant.UserCustomerSession]; }

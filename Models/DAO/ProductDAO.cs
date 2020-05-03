@@ -1,4 +1,5 @@
 ﻿using Abp.Application.Services.Dto;
+using Abp.Linq.Extensions;
 using Models.Constants;
 using Models.DTO;
 using Models.EntityFrameworkCore;
@@ -21,6 +22,30 @@ namespace Models.DAO
             int totalCount = products.Count();
             products = products.Skip((currentPage - 1) * pageSize).Take(pageSize);
             return new PagedResultDto<Product>(totalCount, products.ToList());
+        }
+
+        public List<ProductModel> GetAllProductImageByKeyWord(string search)
+        {
+            var query = dbContext.Products.Where(x => x.ProductStatus == ProductStatus.Active)
+                                .WhereIf(!string.IsNullOrWhiteSpace(search), x => x.Name.Contains(search.Trim()))
+                                .OrderByDescending(x => x.Id);
+            var assets = dbContext.Assets;
+
+            var result = from x in query
+                        join a in assets on x.Id equals a.ProductId
+                        group a by x into gr
+                        select new ProductModel
+                        {
+                            Id = gr.Key.Id,
+                            Name = gr.Key.Name,
+                            Price = gr.Key.Price,
+                            Image = new Image
+                            {
+                                Name = gr.FirstOrDefault().Name,
+                                Path = gr.FirstOrDefault().Path
+                            }
+                        };
+            return result.ToList();
         }
 
         public async Task<long> CreateProductAsync(ProductRequest productRequest)
