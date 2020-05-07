@@ -1,0 +1,17 @@
+﻿@model List<ProductModel>
+@{ CultureInfo cul = CultureInfo.GetCultureInfo("vi-VN"); }
+@foreach (var item in Model)
+{
+    <div class="col-md-4 bottom-cd simpleCart_shelfItem">
+        <div class="product-at ">
+            <a href="@Url.Action("Index", "Product", new { id = item.Id })">
+                <img class="img-responsive image-product" src="@item.Image.Path" alt="@item.Name">
+                <div class="pro-grid">
+                    <span class="buy-in btnAddProduct">Buy Now</span>
+                </div>
+            </a>
+        </div>
+        <p class="tun">@item.Name</p>
+        <a href="#" class="item_add btnAddProduct" data-id="@item.Id"><p class="number item_price"><i></i>@item.Price.ToString("#,###", cul.NumberFormat) VND</p></a>
+    </div>
+}

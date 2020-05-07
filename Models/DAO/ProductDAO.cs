@@ -32,19 +32,19 @@ namespace Models.DAO
             var assets = dbContext.Assets;
 
             var result = from x in query
-                        join a in assets on x.Id equals a.ProductId
-                        group a by x into gr
-                        select new ProductModel
-                        {
-                            Id = gr.Key.Id,
-                            Name = gr.Key.Name,
-                            Price = gr.Key.Price,
-                            Image = new Image
-                            {
-                                Name = gr.FirstOrDefault().Name,
-                                Path = gr.FirstOrDefault().Path
-                            }
-                        };
+                         join a in assets on x.Id equals a.ProductId
+                         group a by x into gr
+                         select new ProductModel
+                         {
+                             Id = gr.Key.Id,
+                             Name = gr.Key.Name,
+                             Price = gr.Key.Price,
+                             Image = new Image
+                             {
+                                 Name = gr.FirstOrDefault().Name,
+                                 Path = gr.FirstOrDefault().Path
+                             }
+                         };
             return result.ToList();
         }
 
@@ -228,12 +228,13 @@ namespace Models.DAO
             return products;
         }
 
-        public async Task<List<ProductModel>> GetAllProductByCategory(long categoryId, int pageSize = 9, int currentPage = 1)
+        public async Task<PagedResultDto<ProductModel>> GetAllProductByCategory(long categoryId, int pageSize = 9, int currentPage = 1)
         {
-            var products = dbContext.Products.Where(x => x.ProductStatus == ProductStatus.Active && x.CategoryId == categoryId)
-                                            .OrderByDescending(x => x.Id)
-                                            .Skip((currentPage - 1) * pageSize)
-                                            .Take(pageSize);
+            var products = dbContext.Products.Where(x => x.ProductStatus == ProductStatus.Active && x.CategoryId == categoryId);
+            int totalCount = await products.CountAsync();
+            products = products.OrderByDescending(x => x.Id)
+                               .Skip((currentPage - 1) * pageSize)
+                               .Take(pageSize);
             var productResult = await (from product in products
                                        join asset in dbContext.Assets on product.Id equals asset.ProductId
                                        group asset by product into gr
@@ -248,7 +249,7 @@ namespace Models.DAO
                                                Path = x.Path
                                            }).FirstOrDefault()
                                        }).ToListAsync();
-            return productResult;
+            return new PagedResultDto<ProductModel>(totalCount, productResult);
         }
     }
 }
