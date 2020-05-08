@@ -3,6 +3,25 @@
     ViewBag.Title = "Detail";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
 }
+
+@section JsSection {
+    <script>
+        if('@TempData["SaveProduct"]')
+        {
+            @{ TempData["SaveProduct"] = ""; }
+        }
+    </script>
+    <style>
+        .image img {
+            height: 150px;
+            max-height: 150px;
+            object-fit: contain;
+            width: 80%;
+            max-width: 80%;
+        }
+    </style>
+}
+
 @using System.Globalization
 @model ProductRequest
 @{ CultureInfo cul = CultureInfo.GetCultureInfo("vi-VN"); }
@@ -52,13 +71,3 @@
 <div class="row">
     <a href="javascript:history.back()" class="btn btn-outline-primary ml-5">Trở về</a>
 </div>
-
-<style>
-    .image img {
-        height: 150px;
-        max-height: 150px;
-        object-fit: contain;
-        width: 80%;
-        max-width: 80%;
-    }
-</style>

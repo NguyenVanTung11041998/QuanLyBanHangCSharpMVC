@@ -154,13 +154,13 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>07/25/2012 11:48:56</publishTime>
     </File>
     <File Include="bin/Models.dll">
-      <publishTime>03/28/2020 09:54:09</publishTime>
+      <publishTime>05/08/2020 23:53:44</publishTime>
     </File>
     <File Include="bin/Models.dll.config">
       <publishTime>03/07/2020 18:48:40</publishTime>
     </File>
     <File Include="bin/Models.pdb">
-      <publishTime>03/28/2020 09:54:09</publishTime>
+      <publishTime>05/08/2020 23:53:44</publishTime>
     </File>
     <File Include="bin/Newtonsoft.Json.dll">
       <publishTime>11/09/2019 00:56:44</publishTime>
@@ -190,10 +190,10 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>09/30/2013 18:15:20</publishTime>
     </File>
     <File Include="bin/QuanLyBanHangCSharpMVC.dll">
-      <publishTime>03/28/2020 09:54:11</publishTime>
+      <publishTime>05/08/2020 23:53:46</publishTime>
     </File>
     <File Include="bin/QuanLyBanHangCSharpMVC.pdb">
-      <publishTime>03/28/2020 09:54:11</publishTime>
+      <publishTime>05/08/2020 23:53:46</publishTime>
     </File>
     <File Include="bin/roslyn/csc.exe">
       <publishTime>08/08/2018 05:38:48</publishTime>
@@ -4906,7 +4906,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>02/14/2020 22:47:56</publishTime>
     </File>
     <File Include="Content/Site/css/style.css">
-      <publishTime>03/08/2020 20:44:55</publishTime>
+      <publishTime>05/04/2020 00:12:52</publishTime>
     </File>
     <File Include="Content/Site/images/cart.png">
       <publishTime>02/14/2020 22:47:57</publishTime>
@@ -6273,8 +6273,11 @@ by editing this MSBuild file. In order to learn more about this please visit htt
     <File Include="Views/Cart/Index.cshtml">
       <publishTime>02/29/2020 20:03:43</publishTime>
     </File>
+    <File Include="Views/Category/CategoryPartial.cshtml">
+      <publishTime>05/07/2020 22:44:52</publishTime>
+    </File>
     <File Include="Views/Category/Index.cshtml">
-      <publishTime>02/29/2020 20:53:37</publishTime>
+      <publishTime>05/07/2020 23:39:43</publishTime>
     </File>
     <File Include="Views/ForgetPassword/Index.cshtml">
       <publishTime>03/08/2020 21:16:16</publishTime>
@@ -6300,6 +6303,9 @@ by editing this MSBuild file. In order to learn more about this please visit htt
     <File Include="Views/Producer/Index.cshtml">
       <publishTime>02/29/2020 20:54:37</publishTime>
     </File>
+    <File Include="Views/Product/GetProductByKeyword.cshtml">
+      <publishTime>05/04/2020 00:00:43</publishTime>
+    </File>
     <File Include="Views/Product/Index.cshtml">
       <publishTime>03/07/2020 15:58:37</publishTime>
     </File>
@@ -6307,16 +6313,16 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>03/08/2020 21:12:26</publishTime>
     </File>
     <File Include="Views/Register/Index.cshtml">
-      <publishTime>03/08/2020 21:12:31</publishTime>
+      <publishTime>05/03/2020 22:33:54</publishTime>
     </File>
     <File Include="Views/Shared/_Layout.cshtml">
-      <publishTime>03/13/2020 15:46:17</publishTime>
+      <publishTime>05/04/2020 00:15:19</publishTime>
     </File>
     <File Include="Views/Web.config">
       <publishTime>02/28/2020 21:31:42</publishTime>
     </File>
     <File Include="Web.config">
-      <publishTime>03/28/2020 09:54:13</publishTime>
+      <publishTime>05/08/2020 23:53:49</publishTime>
     </File>
   </ItemGroup>
 </Project>

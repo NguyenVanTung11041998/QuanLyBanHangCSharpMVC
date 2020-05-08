@@ -73,6 +73,7 @@
                 toastr.success('@TempData["SaveProduct"]');
                 @{ TempData["SaveProduct"] = ""; }
             }
+            $(".btnPage").first().addClass("page");
         });
 
         $("#btnSearch").click(function () {
@@ -85,10 +86,6 @@
                     $("#dataTable").html(result);
                 }
             });
-        });
-
-        $(document).ready(function () {
-            $(".btnPage").first().addClass("page");
         });
     </script>
     <style>
@@ -134,7 +131,7 @@
             <table class="table table-bordered table-hover">
                 <thead>
                     <tr>
-                        <th>Tên sản phẩm</th>
+                        <th width="400px">Tên sản phẩm</th>
                         <th>Ngày cập nhật</th>
                         <th>Đơn giá</th>
                         <th>Tình trạng</th>
