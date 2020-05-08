@@ -7,11 +7,11 @@ namespace Models.EntityFrameworkCore
         public long Id { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }
+        public AccountStatus AccountStatus { get; set; }
+        public AccountRole AccountRole { get; set; }
         [ForeignKey(nameof(User))]
         public long UserId { get; set; }
         public virtual User User { get; set; }
-        public AccountStatus AccountStatus { get; set; }
-        public AccountRole AccountRole { get; set; }
     }
 
     public enum AccountStatus
