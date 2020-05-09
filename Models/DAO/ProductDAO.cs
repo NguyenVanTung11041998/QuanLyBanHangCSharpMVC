@@ -209,7 +209,7 @@ namespace Models.DAO
             return new ProductAndRelated { Product = product, ProductRelated = productRelated };
         }
 
-        public List<ProductModel> GetNewProducts(int count = 3)
+        public List<ProductModel> GetNewProducts(int count = 6)
         {
             var products = (from product in dbContext.Products.Where(x => x.ProductStatus == ProductStatus.Active).OrderByDescending(x => x.Id).Take(count)
                             join asset in dbContext.Assets on product.Id equals asset.ProductId
