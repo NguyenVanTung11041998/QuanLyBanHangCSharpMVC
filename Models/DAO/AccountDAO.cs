@@ -42,5 +42,10 @@ namespace Models.DAO
         {
             return await DBContext.Accounts.AnyAsync(x => x.Email == email);
         }
+
+        public async Task<bool> CheckPhoneExistAsync(string phone)
+        {
+            return await DBContext.Users.AnyAsync(x => x.Phone == phone);
+        }
     }
 }
