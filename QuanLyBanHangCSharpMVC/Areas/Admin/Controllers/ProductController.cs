@@ -42,32 +42,35 @@ namespace QuanLyBanHangCSharpMVC.Areas.Admin.Controllers
         [ValidateInput(false)]
         public async Task<ActionResult> Create(ProductRequest productRequest, List<HttpPostedFileBase> files)
         {
-            if (files?.Count > 0)
+            if (ModelState.IsValid)
             {
-                string root = AppDomain.CurrentDomain.BaseDirectory;
-                string fileLocation = Path.Combine(root, "Content", "Images");
-                if (!Directory.Exists(fileLocation))
-                    Directory.CreateDirectory(fileLocation);
-                productRequest.Images = new List<Image>();
-                foreach (var item in files)
+                if (files?.Count > 0)
                 {
-                    if(item != null)
+                    string root = AppDomain.CurrentDomain.BaseDirectory;
+                    string fileLocation = Path.Combine(root, "Content", "Images");
+                    if (!Directory.Exists(fileLocation))
+                        Directory.CreateDirectory(fileLocation);
+                    productRequest.Images = new List<Image>();
+                    foreach (var item in files)
                     {
-                        item.SaveAs($"{fileLocation}/{item.FileName}");
-                        var image = new Image
+                        if (item != null)
                         {
-                            Name = item.FileName,
-                            Path = $"/Content/Images/{item.FileName}"
-                        };
-                        productRequest.Images.Add(image);
+                            item.SaveAs($"{fileLocation}/{item.FileName}");
+                            var image = new Image
+                            {
+                                Name = item.FileName,
+                                Path = $"/Content/Images/{item.FileName}"
+                            };
+                            productRequest.Images.Add(image);
+                        }
                     }
                 }
-            }
-            var result = await productDAO.CreateProductAsync(productRequest);
-            if(result > 0)
-            {
-                TempData["SaveProduct"] = "Thêm sản phẩm thành công!";
-                return RedirectToAction("Index");
+                var result = await productDAO.CreateProductAsync(productRequest);
+                if (result > 0)
+                {
+                    TempData["SaveProduct"] = "Thêm sản phẩm thành công!";
+                    return RedirectToAction("Index");
+                }
             }
             return View(productRequest);
         }
@@ -86,32 +89,35 @@ namespace QuanLyBanHangCSharpMVC.Areas.Admin.Controllers
         [ValidateInput(false)]
         public async Task<ActionResult> Edit(ProductRequest productRequest, List<HttpPostedFileBase> files)
         {
-            if (files?.Count > 0)
+            if (ModelState.IsValid)
             {
-                string root = AppDomain.CurrentDomain.BaseDirectory;
-                string fileLocation = Path.Combine(root, "Content", "Images");
-                if (!Directory.Exists(fileLocation))
-                    Directory.CreateDirectory(fileLocation);
-                productRequest.Images = new List<Image>();
-                foreach (var item in files)
+                if (files?.Count > 0)
                 {
-                    if(item != null)
+                    string root = AppDomain.CurrentDomain.BaseDirectory;
+                    string fileLocation = Path.Combine(root, "Content", "Images");
+                    if (!Directory.Exists(fileLocation))
+                        Directory.CreateDirectory(fileLocation);
+                    productRequest.Images = new List<Image>();
+                    foreach (var item in files)
                     {
-                        item.SaveAs($"{fileLocation}/{item.FileName}");
-                        var image = new Image
+                        if (item != null)
                         {
-                            Name = item.FileName,
-                            Path = $"/Content/Images/{item.FileName}"
-                        };
-                        productRequest.Images.Add(image);
+                            item.SaveAs($"{fileLocation}/{item.FileName}");
+                            var image = new Image
+                            {
+                                Name = item.FileName,
+                                Path = $"/Content/Images/{item.FileName}"
+                            };
+                            productRequest.Images.Add(image);
+                        }
                     }
                 }
-            }
-            var result = await productDAO.EditProductAsync(productRequest);
-            if (result)
-            {
-                TempData["SaveProduct"] = "Cập nhật sản phẩm thành công!";
-                return RedirectToAction("Index");
+                var result = await productDAO.EditProductAsync(productRequest);
+                if (result)
+                {
+                    TempData["SaveProduct"] = "Cập nhật sản phẩm thành công!";
+                    return RedirectToAction("Index");
+                }
             }
             return View(productRequest);
         }
@@ -134,7 +140,7 @@ namespace QuanLyBanHangCSharpMVC.Areas.Admin.Controllers
         public async Task<ActionResult> Detail(long id)
         {
             var product = await productDAO.GetProductById(id);
-            if(product == null)
+            if (product == null)
             {
                 return RedirectToAction("Index");
             }

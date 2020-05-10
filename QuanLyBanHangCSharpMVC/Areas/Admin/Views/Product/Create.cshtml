@@ -27,15 +27,28 @@
 
         function submitForm() {
             let price = $("#inputPrice").val();
-            let regex = /[^0-9]/;
-            let checkPrice = regex.test(price.toString());
+            let name = $("#productName").val();
+            let checkPrice = +price <= 0 && !price;
             if (checkPrice)
-                $("#message").html("<div class=\"mb-3\">Đơn giá phải là số!</div>");
-            else
+                $("#message").html("<div class=\"mb-3\">Đơn giá phải là nguyên dương!</div>");
+            if (!name.trim())
+                $("#messageProduct").html("<div class=\"mb-3\">Tên không được để trống!</div>");
+            else if (!checkPrice)
                 $("#formProduct").submit();
         }
     </script>
     <script type="text/javascript">CKEDITOR.replace("Description");</script>
+    <style>
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+    </style>
 }
 
 @using (Html.BeginForm("Create", "Product", FormMethod.Post, new { enctype = "multipart/form-data", id = "formProduct" }))
@@ -52,14 +65,15 @@
                 <div class="col-sm-6">
                     @Html.LabelFor(model => model.Name, new { @class = "control-label col-md-6" })
                     <div class="col-md-8">
-                        @Html.TextBoxFor(model => model.Name, new { @class = "form-control", placeholder = "Tên sản phẩm" })
+                        @Html.TextBoxFor(model => model.Name, new { id = "productName", @class = "form-control", placeholder = "Tên sản phẩm" })
                         @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                        <div id="messageProduct"></div>
                     </div>
                 </div>
                 <div class="col-sm-6">
                     @Html.LabelFor(model => model.Price, new { @class = "control-label col-md-6" })
                     <div class="col-md-8">
-                        @Html.TextBoxFor(model => model.Price, new { @class = "form-control", placeholder = "Đơn giá", id = "inputPrice" })
+                        @Html.TextBoxFor(model => model.Price, new { @class = "form-control", placeholder = "Đơn giá", type = "number", id = "inputPrice" })
                         @Html.ValidationMessageFor(model => model.Price, "", new { @class = "text-danger" })
                         <div id="message"></div>
                     </div>
