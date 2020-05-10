@@ -32,31 +32,34 @@ namespace QuanLyBanHangCSharpMVC.Areas.Admin.Controllers
             bool checkEmail = await accountDAO.CheckEmailExistAsync(userDto.Email);
             if (!checkEmail)
             {
-                User user = new User
+                if (ModelState.IsValid)
                 {
-                    Address = userDto.Address,
-                    Name = userDto.Name,
-                    Phone = userDto.Phone,
-                    UserSatus = UserSatus.Active
-                };
-                long userId = await userDAO.CreateUserAsync(user);
-                userDto.Password = PasswordMd5.HashPassword(userDto.Password);
-                Account account = new Account
-                {
-                    AccountRole = AccountRole.Admin,
-                    Email = userDto.Email,
-                    Password = userDto.Password,
-                    UserId = userId,
-                    AccountStatus = AccountStatus.Active
-                };
-                bool result = await accountDAO.CreateAccountAsync(account);
-                if (result)
-                {
-                    TempData["AddAcountSuccess"] = "Đăng ký tài khoản thành công!";
-                    return RedirectToAction("Index", "Login");
+                    User user = new User
+                    {
+                        Address = userDto.Address,
+                        Name = userDto.Name,
+                        Phone = userDto.Phone,
+                        UserSatus = UserSatus.Active
+                    };
+                    long userId = await userDAO.CreateUserAsync(user);
+                    userDto.Password = PasswordMd5.HashPassword(userDto.Password);
+                    Account account = new Account
+                    {
+                        AccountRole = AccountRole.Admin,
+                        Email = userDto.Email,
+                        Password = userDto.Password,
+                        UserId = userId,
+                        AccountStatus = AccountStatus.Active
+                    };
+                    bool result = await accountDAO.CreateAccountAsync(account);
+                    if (result)
+                    {
+                        TempData["AddAcountSuccess"] = "Đăng ký tài khoản thành công!";
+                        return RedirectToAction("Index", "Login");
+                    }
+                    else
+                        ModelState.AddModelError("AddUserFail", "Đăng ký không thành công!");
                 }
-                else
-                    ModelState.AddModelError("AddUserFail", "Đăng ký không thành công!");
             }
             else
                 ModelState.AddModelError("EmailExits", "Email đã tồn tại!");

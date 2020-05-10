@@ -60,7 +60,8 @@
                                                 id = "Email",
                                                 @class = "form-control",
                                                 placeholder = "Address",
-                                                required = "required"
+                                                required = "required",
+                                                type = "email"
                                             } as object
                                             : new
                                             {
@@ -69,7 +70,8 @@
                                                 placeholder = "Address",
                                                 required = "required",
                                                 Value = Model?.Email,
-                                                @readonly = "readonly"
+                                                @readonly = "readonly",
+                                                type = "email"
                                             };
                                     }
                                     @Html.TextBoxFor(model => model.Email, emailAttribute)
@@ -117,8 +119,16 @@
         function sumbitForm() {
             let password = $("#inputPassword").val();
             let confirmPassword = $("#inputConfirmPassword").val();
-            if (password != confirmPassword)
+            let email = $("#Email").val();
+            let regex = /^[a-z0-9._%+-]+@("@")[a-z0-9.-]+\.[a-z]{2,4}$/;
+            if (!email.trim())
+                $("#message").html("<div class=\"mb-3\">Email không được để trống!</div>");
+            else if (!regex.test(email))
+                $("#message").html("<div class=\"mb-3\">Email không hợp lệ!</div>");
+            else if (password != confirmPassword)
                 $("#message").html("<div class=\"mb-3\">Mật khẩu không khớp!</div>");
+            else if (!password.trim())
+                $("#message").html("<div class=\"mb-3\">Mật khẩu không được để trống!</div>");
             else
                 $("#formRegister").submit();
         }

@@ -4,44 +4,43 @@ using System.Threading.Tasks;
 
 namespace Models.DAO
 {
-    public class AccountDAO
+    public class AccountDAO : BaseDAO
     {
-        private QuanLyBanHangCSharpDbContext dbContext = new QuanLyBanHangCSharpDbContext();
         public async Task<Account> LoginAsync(string email, string password, bool isAdminOrManager = true)
         {
             if (isAdminOrManager)
-                return await dbContext.Accounts.FirstOrDefaultAsync(x => x.Email == email && x.Password == password && x.AccountStatus == AccountStatus.Active && (x.AccountRole == AccountRole.Admin || x.AccountRole == AccountRole.Manager));
-            return await dbContext.Accounts.FirstOrDefaultAsync(x => x.Email == email && x.Password == password && x.AccountStatus == AccountStatus.Active && x.AccountRole == AccountRole.User);
+                return await DBContext.Accounts.FirstOrDefaultAsync(x => x.Email == email && x.Password == password && x.AccountStatus == AccountStatus.Active && (x.AccountRole == AccountRole.Admin || x.AccountRole == AccountRole.Manager));
+            return await DBContext.Accounts.FirstOrDefaultAsync(x => x.Email == email && x.Password == password && x.AccountStatus == AccountStatus.Active && x.AccountRole == AccountRole.User);
         }
 
         public async Task<Account> GetAccountByIdAsync(long id)
         {
-            return await dbContext.Accounts.FirstOrDefaultAsync(x => x.Id == id);
+            return await DBContext.Accounts.FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public async Task<bool> CreateAccountAsync(Account account)
         {
-            dbContext.Accounts.Add(account);
-            return await dbContext.SaveChangesAsync() > 0;
+            DBContext.Accounts.Add(account);
+            return await DBContext.SaveChangesAsync() > 0;
         }
 
         public async Task<bool> UpdatePasswordByEmailAsync(string email, string password)
         {
-            var account = await dbContext.Accounts.FirstOrDefaultAsync(x => x.Email == email);
+            var account = await DBContext.Accounts.FirstOrDefaultAsync(x => x.Email == email);
             account.Password = password;
-            return await dbContext.SaveChangesAsync() > 0;
+            return await DBContext.SaveChangesAsync() > 0;
         }
 
         public async Task<bool> ChangeStatusAccount(string email)
         {
-            var account = await dbContext.Accounts.FirstOrDefaultAsync(x => x.Email == email);
+            var account = await DBContext.Accounts.FirstOrDefaultAsync(x => x.Email == email);
             account.AccountStatus = account.AccountStatus == AccountStatus.Active ? AccountStatus.Deactive : AccountStatus.Active;
-            return await dbContext.SaveChangesAsync() > 0;
+            return await DBContext.SaveChangesAsync() > 0;
         }
 
         public async Task<bool> CheckEmailExistAsync(string email)
         {
-            return await dbContext.Accounts.AnyAsync(x => x.Email == email);
+            return await DBContext.Accounts.AnyAsync(x => x.Email == email);
         }
     }
 }

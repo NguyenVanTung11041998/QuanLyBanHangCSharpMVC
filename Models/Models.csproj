@@ -186,6 +186,7 @@
   <ItemGroup>
     <Compile Include="Constants\ActionStatus.cs" />
     <Compile Include="DAO\AccountDAO.cs" />
+    <Compile Include="DAO\BaseDAO.cs" />
     <Compile Include="DAO\BillDAO.cs" />
     <Compile Include="DAO\BillImportDAO.cs" />
     <Compile Include="DAO\CartDAO.cs" />

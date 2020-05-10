@@ -11,26 +11,25 @@ using System.Threading.Tasks;
 
 namespace Models.DAO
 {
-    public class BillDAO
+    public class BillDAO : BaseDAO
     {
-        private QuanLyBanHangCSharpDbContext dbContext = new QuanLyBanHangCSharpDbContext();
         public async Task<long> CreateBill(Bill bill)
         {
-            dbContext.Bills.Add(bill);
-            await dbContext.SaveChangesAsync();
+            DBContext.Bills.Add(bill);
+            await DBContext.SaveChangesAsync();
             return bill.Id;
         }
 
         public async Task<int> CreateBillInfo(List<BillInfo> billInfos)
         {
-            dbContext.BillInfos.AddRange(billInfos);
-            return await dbContext.SaveChangesAsync();
+            DBContext.BillInfos.AddRange(billInfos);
+            return await DBContext.SaveChangesAsync();
         }
 
         [Obsolete]
         public PagedResultDto<Bill> GetAllBill(DateTime? dateTime, int currentPage, int pageSize)
         {
-            IQueryable<Bill> bills = dbContext.Bills.OrderByDescending(x => x.CreationTime);
+            IQueryable<Bill> bills = DBContext.Bills.OrderByDescending(x => x.CreationTime);
             bills = bills.WhereIf(dateTime != null, x => EntityFunctions.TruncateTime(x.CreationTime) == EntityFunctions.TruncateTime(dateTime));
             int totalCount = bills.Count();
             bills = bills.Skip((currentPage - 1) * pageSize).Take(pageSize);
@@ -39,7 +38,7 @@ namespace Models.DAO
 
         public async Task<BillDto> GetAllBillInfoInfoByBillId(long billId)
         {
-            var bill = await dbContext.Bills.Where(x => x.Id == billId)
+            var bill = await DBContext.Bills.Where(x => x.Id == billId)
                                             .Select(x => new BillDto
                                             {
                                                 Address = x.Address,
@@ -50,7 +49,7 @@ namespace Models.DAO
                                                 TotalPrice = x.TotalPrice,
                                                 UserName = x.Account.User.Name,
                                                 VAT = x.VAT,
-                                                BillInfos = dbContext.BillInfos.Where(p => p.BillId == billId)
+                                                BillInfos = DBContext.BillInfos.Where(p => p.BillId == billId)
                                                                 .Select(p => new BillInfoDto
                                                                 {
                                                                     Id = p.Id,
@@ -66,22 +65,22 @@ namespace Models.DAO
 
         public async Task<bool> RejectBill(long id)
         {
-            var bill = await dbContext.Bills.FirstOrDefaultAsync(x => x.Id == id);
+            var bill = await DBContext.Bills.FirstOrDefaultAsync(x => x.Id == id);
             if (bill.BillStatus == BillStatus.Confirmed)
             {
-                var billInfos = dbContext.BillInfos.Where(x => x.BillId == id);
+                var billInfos = DBContext.BillInfos.Where(x => x.BillId == id);
                 var products = await billInfos.Select(x => x.Product).ToListAsync();
                 products.ForEach(x => x.AmountProduct += billInfos.FirstOrDefault(p => p.ProductId == x.Id).QuantityPurchased);
             }
             bill.BillStatus = BillStatus.Cancel;
-            return await dbContext.SaveChangesAsync() > 0;
+            return await DBContext.SaveChangesAsync() > 0;
         }
 
         public async Task<bool> ConfirmBill(long id)
         {
-            var bill = await dbContext.Bills.FirstOrDefaultAsync(x => x.Id == id);
+            var bill = await DBContext.Bills.FirstOrDefaultAsync(x => x.Id == id);
             bill.BillStatus = BillStatus.Confirmed;
-            var billInfos = dbContext.BillInfos.Where(x => x.BillId == id);
+            var billInfos = DBContext.BillInfos.Where(x => x.BillId == id);
             var products = await billInfos.Select(x => x.Product).ToListAsync();
             foreach (var item in products)
             {
@@ -90,14 +89,14 @@ namespace Models.DAO
                     return false;
                 item.AmountProduct -= productOrder.QuantityPurchased;
             }
-            return await dbContext.SaveChangesAsync() > 0;
+            return await DBContext.SaveChangesAsync() > 0;
         }
 
         public async Task<bool> PayBill(long id)
         {
-            var bill = await dbContext.Bills.FirstOrDefaultAsync(x => x.Id == id);
+            var bill = await DBContext.Bills.FirstOrDefaultAsync(x => x.Id == id);
             bill.BillStatus = BillStatus.AlreadyPaid;
-            return await dbContext.SaveChangesAsync() > 0;
+            return await DBContext.SaveChangesAsync() > 0;
         }
     }
 }

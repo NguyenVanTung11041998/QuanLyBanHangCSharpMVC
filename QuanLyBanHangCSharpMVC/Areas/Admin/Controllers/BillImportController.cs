@@ -21,6 +21,7 @@ namespace QuanLyBanHangCSharpMVC.Areas.Admin.Controllers
         }
 
         [HttpGet]
+        [ChildActionOnly]
         public ActionResult BillImportPartial(DateTime? dateTime, int currentPage = 1, int pageSize = 20)
         {
             var bills = billImportDAO.GetAllBillImport(dateTime, currentPage, pageSize);

@@ -11,7 +11,7 @@ namespace Models.DAO
 {
     public class ProducerDAO
     {
-        private QuanLyBanHangCSharpDbContext dbContext = new QuanLyBanHangCSharpDbContext();
+        private readonly QuanLyBanHangCSharpDbContext dbContext = new QuanLyBanHangCSharpDbContext();
         public PagedResultDto<Producer> GetAllProducerByKeyWord(string search, int currentPage, int pageSize)
         {
             IQueryable<Producer> producers = dbContext.Producers.OrderByDescending(x => x.Id);

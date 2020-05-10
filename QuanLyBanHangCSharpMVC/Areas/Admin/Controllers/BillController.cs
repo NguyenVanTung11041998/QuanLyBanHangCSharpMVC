@@ -20,6 +20,7 @@ namespace QuanLyBanHangCSharpMVC.Areas.Admin.Controllers
 
         [HttpGet]
         [Obsolete]
+        [ChildActionOnly]
         public ActionResult BillPartial(DateTime? dateTime, int currentPage = 1, int pageSize = 20)
         {
             var bills = billDAO.GetAllBill(dateTime, currentPage, pageSize);

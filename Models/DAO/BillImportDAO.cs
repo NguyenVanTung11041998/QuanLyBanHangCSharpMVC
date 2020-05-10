@@ -12,7 +12,7 @@ namespace Models.DAO
 {
     public class BillImportDAO
     {
-        private QuanLyBanHangCSharpDbContext dbContext = new QuanLyBanHangCSharpDbContext();
+        private readonly QuanLyBanHangCSharpDbContext dbContext = new QuanLyBanHangCSharpDbContext();
         public PagedResultDto<BillImport> GetAllBillImport(DateTime? dateTime, int currentPage, int pageSize)
         {
             IQueryable<BillImport> bills = dbContext.BillImports.OrderByDescending(x => x.CreationTime);
