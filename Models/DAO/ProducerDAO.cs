@@ -9,12 +9,11 @@ using System.Threading.Tasks;
 
 namespace Models.DAO
 {
-    public class ProducerDAO
+    public class ProducerDAO : BaseDAO
     {
-        private readonly QuanLyBanHangCSharpDbContext dbContext = new QuanLyBanHangCSharpDbContext();
         public PagedResultDto<Producer> GetAllProducerByKeyWord(string search, int currentPage, int pageSize)
         {
-            IQueryable<Producer> producers = dbContext.Producers.OrderByDescending(x => x.Id);
+            IQueryable<Producer> producers = DBContext.Producers.OrderByDescending(x => x.Id);
             if (!string.IsNullOrWhiteSpace(search))
                 producers = producers.Where(x => x.Name.Contains(search.Trim()));
             int totalCount = producers.Count();
@@ -31,26 +30,7 @@ namespace Models.DAO
                 Phone = producerRequest.Phone,
                 ProducerStatus = ProducerStatus.Active
             };
-            dbContext.Producers.Add(producer);
-            var logo = new Asset
-            {
-                Name = producerRequest.Logo.Name,
-                Path = producerRequest.Logo.Path,
-                ProducerId = producer.Id
-            };
-            dbContext.Assets.Add(logo);
-            await dbContext.SaveChangesAsync();
-            return producer.Id;
-        }
-
-        public async Task<bool> EditProducerAsync(ProducerRequest producerRequest)
-        {
-            var producer = await dbContext.Producers.FirstOrDefaultAsync(x => x.Id == producerRequest.Id);
-            producer.Name = producerRequest.Name;
-            producer.Phone = producerRequest.Phone;
-            producer.Addess = producerRequest.Address;
-            var assets = await dbContext.Assets.Where(x => x.ProducerId == producerRequest.Id).ToListAsync();
-            assets.ForEach(x => dbContext.Assets.Remove(x));
+            DBContext.Producers.Add(producer);
             if (producerRequest.Logo != null)
             {
                 var logo = new Asset
@@ -59,29 +39,51 @@ namespace Models.DAO
                     Path = producerRequest.Logo.Path,
                     ProducerId = producer.Id
                 };
-                dbContext.Assets.Add(logo);
+                DBContext.Assets.Add(logo);
             }
-            return await dbContext.SaveChangesAsync() > 0;
+            await DBContext.SaveChangesAsync();
+            return producer.Id;
+        }
+
+        public async Task<bool> EditProducerAsync(ProducerRequest producerRequest)
+        {
+            var producer = await DBContext.Producers.FirstOrDefaultAsync(x => x.Id == producerRequest.Id);
+            producer.Name = producerRequest.Name;
+            producer.Phone = producerRequest.Phone;
+            producer.Addess = producerRequest.Address;
+            var assets = await DBContext.Assets.Where(x => x.ProducerId == producerRequest.Id).ToListAsync();
+            assets.ForEach(x => DBContext.Assets.Remove(x));
+            if (producerRequest.Logo != null)
+            {
+                var logo = new Asset
+                {
+                    Name = producerRequest.Logo.Name,
+                    Path = producerRequest.Logo.Path,
+                    ProducerId = producer.Id
+                };
+                DBContext.Assets.Add(logo);
+            }
+            return await DBContext.SaveChangesAsync() > 0;
         }
 
         public async Task<ProducerStatus> ChangeStatusAsync(long id)
         {
-            var producerDelete = await dbContext.Producers.FirstOrDefaultAsync(x => x.Id == id);
+            var producerDelete = await DBContext.Producers.FirstOrDefaultAsync(x => x.Id == id);
             producerDelete.ProducerStatus = producerDelete.ProducerStatus == ProducerStatus.Active ? ProducerStatus.Deactive : ProducerStatus.Active;
-            await dbContext.SaveChangesAsync();
+            await DBContext.SaveChangesAsync();
             return producerDelete.ProducerStatus;
         }
 
         public async Task<ActionStatus> DeleteAsync(long id)
         {
-            var check = await dbContext.Products.AnyAsync(x => x.ProducerId == id);
-            var producerDelete = await dbContext.Producers.FirstOrDefaultAsync(x => x.Id == id);
+            var check = await DBContext.Products.AnyAsync(x => x.ProducerId == id);
+            var producerDelete = await DBContext.Producers.FirstOrDefaultAsync(x => x.Id == id);
             var status = ActionStatus.DeleteSuccess;
             if (!check && producerDelete != null)
             {
-                var assets = await dbContext.Assets.Where(x => x.ProducerId == id).ToListAsync();
-                assets.ForEach(x => dbContext.Assets.Remove(x));
-                dbContext.Producers.Remove(producerDelete);
+                var assets = await DBContext.Assets.Where(x => x.ProducerId == id).ToListAsync();
+                assets.ForEach(x => DBContext.Assets.Remove(x));
+                DBContext.Producers.Remove(producerDelete);
             }
             else if (check && producerDelete != null)
             {
@@ -90,16 +92,16 @@ namespace Models.DAO
             }
             else
                 status = ActionStatus.DeleteFail;
-            await dbContext.SaveChangesAsync();
+            await DBContext.SaveChangesAsync();
             return status;
         }
 
         public async Task<ProducerRequest> GetProducerByIdAsync(long id)
         {
-            var producer = await dbContext.Producers.FirstOrDefaultAsync(x => x.Id == id);
+            var producer = await DBContext.Producers.FirstOrDefaultAsync(x => x.Id == id);
             if (producer == null)
                 return null;
-            var asset = await dbContext.Assets.FirstOrDefaultAsync(x => x.ProducerId == id);
+            var asset = await DBContext.Assets.FirstOrDefaultAsync(x => x.ProducerId == id);
             return new ProducerRequest
             {
                 Address = producer.Addess,
@@ -116,12 +118,12 @@ namespace Models.DAO
 
         public async Task<List<ProductModel>> GetAllProductByProducerAsync(long producerId, int currentPage, int pageSize)
         {
-            var products = dbContext.Products.Where(x => x.ProductStatus == ProductStatus.Active && x.ProducerId == producerId)
+            var products = DBContext.Products.Where(x => x.ProductStatus == ProductStatus.Active && x.ProducerId == producerId)
                                             .OrderByDescending(x => x.Id)
                                             .Skip((currentPage - 1) * pageSize)
                                             .Take(pageSize);
             var productResult = await (from product in products
-                                       join asset in dbContext.Assets on product.Id equals asset.ProductId
+                                       join asset in DBContext.Assets on product.Id equals asset.ProductId
                                        group asset by product into gr
                                        select new ProductModel
                                        {
@@ -139,8 +141,8 @@ namespace Models.DAO
 
         public List<ProducerRequest> GetAllProducerActive()
         {
-            var produces = dbContext.Producers.Where(x => x.ProducerStatus == ProducerStatus.Active);
-            var images = dbContext.Assets;
+            var produces = DBContext.Producers.Where(x => x.ProducerStatus == ProducerStatus.Active);
+            var images = DBContext.Assets;
             var result = (from x in produces
                           join p in images on x.Id equals p.ProducerId
                           group p by x into gr
@@ -153,6 +155,12 @@ namespace Models.DAO
                               Logo = gr.Select(x => new Image { Name = x.Name, Path = x.Path }).FirstOrDefault()
                           }).ToList();
             return result;
+        }
+
+        public async Task<Image> GetImageProducer(long id)
+        {
+            var image = await DBContext.Assets.Where(x => x.ProducerId == id).Select(x => new Image { Name = x.Name, Path = x.Path }).FirstOrDefaultAsync();
+            return image;
         }
     }
 }

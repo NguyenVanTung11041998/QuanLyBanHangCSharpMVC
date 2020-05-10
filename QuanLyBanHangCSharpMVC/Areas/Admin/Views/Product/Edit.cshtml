@@ -51,7 +51,7 @@
     </style>
 }
 
-@using (Html.BeginForm("Edit", "Product", FormMethod.Post, new { enctype = "multipart/form-data" }))
+@using (Html.BeginForm("Edit", "Product", FormMethod.Post, new { enctype = "multipart/form-data", id = "formProduct" }))
 {
     @Html.AntiForgeryToken()
 

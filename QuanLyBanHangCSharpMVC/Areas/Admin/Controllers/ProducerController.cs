@@ -37,30 +37,33 @@ namespace QuanLyBanHangCSharpMVC.Areas.Admin.Controllers
         [HttpPost]
         public async Task<ActionResult> Create(Data.ProducerDto input, HttpPostedFileBase file)
         {
-            var producerRequest = new ProducerRequest
+            if (ModelState.IsValid)
             {
-                Address = input.Address,
-                Name = input.Name,
-                Phone = input.Phone
-            };
-            if(file != null)
-            {
-                string root = AppDomain.CurrentDomain.BaseDirectory;
-                string fileLocation = Path.Combine(root, "Content", "Images");
-                if (!Directory.Exists(fileLocation))
-                    Directory.CreateDirectory(fileLocation);
-                file.SaveAs($"{fileLocation}/{file.FileName}");
-                producerRequest.Logo = new Image
+                var producerRequest = new ProducerRequest
                 {
-                    Name = file.FileName,
-                    Path = $"/Content/Images/{file.FileName}"
+                    Address = input.Address,
+                    Name = input.Name,
+                    Phone = input.Phone
                 };
-            }
-            input.Id = await producerDAO.CreateProducerAsync(producerRequest);
-            if(input.Id > 0)
-            {
-                TempData["SaveProducer"] = "Thêm hãng sản xuất thành công!";
-                return RedirectToAction("Index", "Producer");
+                if (file != null)
+                {
+                    string root = AppDomain.CurrentDomain.BaseDirectory;
+                    string fileLocation = Path.Combine(root, "Content", "Images");
+                    if (!Directory.Exists(fileLocation))
+                        Directory.CreateDirectory(fileLocation);
+                    file.SaveAs($"{fileLocation}/{file.FileName}");
+                    producerRequest.Logo = new Image
+                    {
+                        Name = file.FileName,
+                        Path = $"/Content/Images/{file.FileName}"
+                    };
+                }
+                input.Id = await producerDAO.CreateProducerAsync(producerRequest);
+                if (input.Id > 0)
+                {
+                    TempData["SaveProducer"] = "Thêm hãng sản xuất thành công!";
+                    return RedirectToAction("Index", "Producer");
+                }
             }
             return View(input);
         }
@@ -87,30 +90,35 @@ namespace QuanLyBanHangCSharpMVC.Areas.Admin.Controllers
         [HttpPost]
         public async Task<ActionResult> Edit(Data.ProducerDto input, HttpPostedFileBase file)
         {
-            var producerRequest = new ProducerRequest
+            if (ModelState.IsValid)
             {
-                Id = input.Id,
-                Address = input.Address,
-                Name = input.Name,
-                Phone = input.Phone
-            };
-            if (file != null)
-            {
-                string root = AppDomain.CurrentDomain.BaseDirectory;
-                string fileLocation = Path.Combine(root, "Content", "Images");
-                if (!Directory.Exists(fileLocation))
-                    Directory.CreateDirectory(fileLocation);
-                file.SaveAs($"{fileLocation}/{file.FileName}");
-                producerRequest.Logo = new Image
+                var producerRequest = new ProducerRequest
                 {
-                    Name = file.FileName,
-                    Path = $"/Content/Images/{file.FileName}"
+                    Id = input.Id,
+                    Address = input.Address,
+                    Name = input.Name,
+                    Phone = input.Phone
                 };
+                if (file != null)
+                {
+                    string root = AppDomain.CurrentDomain.BaseDirectory;
+                    string fileLocation = Path.Combine(root, "Content", "Images");
+                    if (!Directory.Exists(fileLocation))
+                        Directory.CreateDirectory(fileLocation);
+                    file.SaveAs($"{fileLocation}/{file.FileName}");
+                    producerRequest.Logo = new Image
+                    {
+                        Name = file.FileName,
+                        Path = $"/Content/Images/{file.FileName}"
+                    };
+                }
+                bool result = await producerDAO.EditProducerAsync(producerRequest);
+                if (result)
+                    TempData["SaveProducer"] = "Cập nhật hãng sản xuất thành công!";
+                return RedirectToAction("Index", "Producer");
             }
-            bool result = await producerDAO.EditProducerAsync(producerRequest);
-            if (result)
-                TempData["SaveProducer"] = "Cập nhật hãng sản xuất thành công!";
-            return RedirectToAction("Index", "Producer");
+            input.Logo = (await producerDAO.GetImageProducer(input.Id))?.Path;
+            return View(input);
         }
 
         [HttpPost]
