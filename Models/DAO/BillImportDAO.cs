@@ -50,9 +50,9 @@ namespace Models.DAO
             return await dbContext.SaveChangesAsync() > 0;
         }
 
-        public async Task<List<BillImportInfo>> GetAllBillImportInfoByBillImportId(long billId)
+        public async Task<BillImport> GetAllBillImportInfoByBillImportId(long billId)
         {
-            return await dbContext.BillImportInfos.Where(x => x.BillImportId == billId).ToListAsync();
+            return await dbContext.BillImports.FirstOrDefaultAsync(x => x.Id == billId);
         }
 
         public bool AcceptBillImport(long id)

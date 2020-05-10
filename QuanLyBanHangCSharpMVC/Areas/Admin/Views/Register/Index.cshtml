@@ -132,6 +132,14 @@
             else
                 $("#formRegister").submit();
         }
+
+        $("#Phone").keypress(function (event) {
+            const pattern = /[0-9]/;
+            let inputChar = String.fromCharCode(event.charCode);
+            if (!pattern.test(inputChar)) {
+                event.preventDefault();
+            }
+        });
     </script>
 </body>
 </html>

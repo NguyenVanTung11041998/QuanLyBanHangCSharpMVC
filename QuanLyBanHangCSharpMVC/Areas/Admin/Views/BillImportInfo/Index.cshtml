@@ -4,8 +4,8 @@
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
 }
 @using System.Globalization
-@model List<BillImportInfo>
-@{ CultureInfo cul = CultureInfo.GetCultureInfo("vi-VN"); }
+@model ICollection<BillImportInfo>
+@{ CultureInfo cul = CultureInfo.GetCultureInfo("vi-VN"); var bill = (BillImport)ViewBag.BillImport; }
 @section JsSection {
     <script type="text/javascript">
         $(".btnAccept").click(function () {
@@ -52,6 +52,12 @@
         <input id="idBillImport" style="display: none;" value="@billImport.Id"/>
         <div class="clearfix"></div>
     </div>
+</div>
+<div class="row mb-3">
+    <div class="col-md-4">
+        Ngày tạo: @bill.CreationTime.ToString("dd/MM/yyyy")
+    </div>
+    <div class="col-md-4">Tổng tiền: @bill.TotalPrice.ToString("#,###", cul.NumberFormat) VND</div>
 </div>
 <div class="row">
     <div class="col-lg-12" id="table_data">

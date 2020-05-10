@@ -10,12 +10,11 @@ namespace QuanLyBanHangCSharpMVC.Areas.Admin.Controllers
         [HttpGet]
         public async Task<ActionResult> Index(long id)
         {
-            var billImportInfos = await billImportDAO.GetAllBillImportInfoByBillImportId(id);
-            var billImport = await billImportDAO.GetBillImportByIdAsync(id);
-            if (billImport == null)
+            var bill = await billImportDAO.GetAllBillImportInfoByBillImportId(id);
+            if (bill == null)
                 return RedirectToAction("Index", "BillImport");
-            ViewBag.BillImport = billImport;
-            return View(billImportInfos);
+            ViewBag.BillImport = bill;
+            return View(bill.BillImportInfos);
         }
 
         [HttpPost]
