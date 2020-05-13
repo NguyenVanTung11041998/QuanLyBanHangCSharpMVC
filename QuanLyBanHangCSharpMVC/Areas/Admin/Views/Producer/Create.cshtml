@@ -20,10 +20,57 @@
         $("#file").change(function () {
             readURL(this);
         });
+        $("#Phone").keypress(function (event) {
+            const pattern = /[0-9]/;
+            let inputChar = String.fromCharCode(event.charCode);
+            if (!pattern.test(inputChar)) {
+                event.preventDefault();
+            }
+        });
+
+        $(".btnSave").click(function () {
+            let name = $("#Name").val();
+            let phone = $("#Phone").val();
+            let check = false;
+            if (!name.trim()) {
+                check = true;
+                $("#messageName").html("<div class=\"mb-3\">Tên không được để trống!</div>");
+            }
+            if (!phone || phone.length != 10 || phone[0] != '0') {
+                $("#message").html("<div class=\"mb-3\">Số điện thoại không hợp lệ!</div>");
+                check = true;
+            }
+            if (!check)
+                $("#formRegister").submit();
+        });
     </script>
+    <style lang="scss" scoped>
+        #messageName {
+            color: red;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #message {
+            color: red;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .help-block ul {
+            list-style-type: none;
+        }
+
+        .DisplayImage img {
+            width: 100px;
+            height: 100px;
+            max-height: 100px;
+            max-width: 100px;
+        }
+    </style>
 }
 
-@using (Html.BeginForm("Create", "Producer", FormMethod.Post, new { enctype = "multipart/form-data" }))
+@using (Html.BeginForm("Create", "Producer", FormMethod.Post, new { enctype = "multipart/form-data", id = "formRegister" }))
 {
     @Html.AntiForgeryToken()
 
@@ -38,8 +85,9 @@
                 <div class="col-sm-6">
                     @Html.LabelFor(model => model.Name, new { @class = "control-label col-md-2" })
                     <div class="col-md-10">
-                        @Html.TextBoxFor(model => model.Name, new { @class = "form-control col-sm-12" })
+                        @Html.TextBoxFor(model => model.Name, new { @class = "form-control col-sm-12", id = "Name" })
                         @Html.ValidationMessageFor(model => model.Name, null, new { @class = "text-danger" })
+                        <div id="messageName"></div>
                     </div>
                 </div>
                 <div class="col-sm-6">
@@ -57,8 +105,9 @@
                 <div class="col-sm-6">
                     @Html.LabelFor(model => model.Phone, new { @class = "control-label col-md-2" })
                     <div class="col-md-10">
-                        @Html.TextBoxFor(model => model.Phone, new { @class = "form-control col-sm-12" })
+                        @Html.TextBoxFor(model => model.Phone, new { @class = "form-control col-sm-12", id = "Phone" })
                         @Html.ValidationMessageFor(model => model.Phone, null, new { @class = "text-danger" })
+                        <div id="message"></div>
                     </div>
                 </div>
             </div>
@@ -76,18 +125,9 @@
 
         <div class="form-group mt-3">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Thêm mới" class="btn btn-success col-md-2" />
+                <input type="button" value="Thêm mới" class="btn btn-success col-md-2 btnSave" />
                 @Html.ActionLink("Hủy", "Index", null, new { @class = "btn btn-danger col-md-2" })
             </div>
         </div>
     </div>
 }
-
-<style>
-    .DisplayImage img {
-        width: 100px;
-        height: 100px;
-        max-height: 100px;
-        max-width: 100px;
-    }
-</style>

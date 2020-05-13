@@ -7,7 +7,7 @@ namespace Models.EntityFrameworkCore
     {
         public QuanLyBanHangCSharpDbContext() : base("name=QuanLyBanHangCSharpMVC")
         {
-            var ensureDLLIsCopied = SqlProviderServices.Instance;
+            _ = SqlProviderServices.Instance;
         }
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<Account> Accounts { get; set; }

@@ -119,7 +119,7 @@
                 <span class="total1">@(ViewBag.TotalPrice > 0 ? ViewBag.TotalPrice.ToString("#,###", cul.NumberFormat) : 0) VND</span>
                 <span>Giảm giá</span>
                 <span class="total1">---</span>
-                <span>Phí ship(10%)</span>
+                <span>Phí VAT(10%)</span>
                 <span class="total1">@(ViewBag.TotalPrice > 0 ? (ViewBag.TotalPrice * 0.1).ToString("#,###", cul.NumberFormat) : 0) VND</span>
                 <div class="clearfix"></div>
             </div>

@@ -34,8 +34,7 @@
                         location.href = "@Url.Action("Index", "Bill")";
                     }
                     else {
-                        toastr.error('@TempData["BillStatus"]');
-                        @{ TempData["BillStatus"] = ""; }
+                        toastr.error('Không đủ hàng, xin kiểm tra lại!');
                     }
                 }
             });
