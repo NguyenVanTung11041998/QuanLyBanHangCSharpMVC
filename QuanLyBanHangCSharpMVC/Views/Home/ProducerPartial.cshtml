@@ -3,7 +3,7 @@
     <ul>
         @foreach (var item in Model)
         {
-            <li><a href="@Url.Action("Index", "Producer", new { id = item.Id })"><img class="image-producer img-responsive" src="@item.Logo.Path" alt=""></a></li>
+            <li><a href="@Url.Action("Index", "Producer", new { id = item.Id })"><img title="@item.Name" class="image-producer img-responsive" src="@item.Logo.Path" alt="@item.Name"></a></li>
         }
     </ul>
     <div class="clearfix"> </div>

@@ -10,7 +10,7 @@ namespace QuanLyBanHangCSharpMVC.Areas.Admin.Controllers
         private UserDAO userDAO = new UserDAO();
         private AccountDAO accountDAO = new AccountDAO();
         [HttpGet]
-        public ActionResult Index(string search, int currentPage = 1, int pageSize = 20)
+        public ActionResult Index(string search, int currentPage = 1, int pageSize = 10)
         {
             var accounts = userDAO.GetAllUsersByKeyWord(search, currentPage, pageSize);
             ViewBag.PageNumber = Paginate.GetTotalPage(accounts.TotalCount, pageSize);
@@ -24,7 +24,7 @@ namespace QuanLyBanHangCSharpMVC.Areas.Admin.Controllers
             return Json(new { user });
         }
 
-        public ActionResult UserPartial(string search, int currentPage = 1, int pageSize = 20)
+        public ActionResult UserPartial(string search, int currentPage = 1, int pageSize = 10)
         {
             var accounts = userDAO.GetAllUsersByKeyWord(search, currentPage, pageSize);
             ViewBag.PageNumber = Paginate.GetTotalPage(accounts.TotalCount, pageSize);
