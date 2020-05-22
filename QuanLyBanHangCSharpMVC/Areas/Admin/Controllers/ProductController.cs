@@ -14,7 +14,7 @@ namespace QuanLyBanHangCSharpMVC.Areas.Admin.Controllers
     {
         private ProductDAO productDAO = new ProductDAO();
         [HttpGet]
-        public ActionResult Index(string search, int currentPage = 1, int pageSize = 20)
+        public ActionResult Index(string search, int currentPage = 1, int pageSize = 10)
         {
             var products = productDAO.GetAllProductByKeyWord(search, currentPage, pageSize);
             ViewBag.PageNumber = Paginate.GetTotalPage(products.TotalCount, pageSize);
@@ -22,7 +22,7 @@ namespace QuanLyBanHangCSharpMVC.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        public ActionResult ProductPartial(string search, int currentPage = 1, int pageSize = 20)
+        public ActionResult ProductPartial(string search, int currentPage = 1, int pageSize = 10)
         {
             var products = productDAO.GetAllProductByKeyWord(search, currentPage, pageSize);
             ViewBag.PageNumber = Paginate.GetTotalPage(products.TotalCount, pageSize);

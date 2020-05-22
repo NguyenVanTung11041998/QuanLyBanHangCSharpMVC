@@ -17,7 +17,7 @@ namespace QuanLyBanHangCSharpMVC.Controllers
             return View(products.Items);
         }
 
-        public async Task<ActionResult> CategoryPartial(long id, int currentPage = 1, int pageSize = 20)
+        public async Task<ActionResult> CategoryPartial(long id, int currentPage = 1, int pageSize = 9)
         {
             var products = await productDAO.GetAllProductByCategory(id, pageSize, currentPage);
             ViewBag.PageNumber = Paginate.GetTotalPage(products.TotalCount, pageSize);

@@ -57,8 +57,8 @@
     <div class="container">
         @Html.Action("MenuLeftPartial", "Home")
         <div class="col-md-9 product1">
+            <input id="idCategory" type="hidden" value="@ViewBag.CategoryId" />
             <div class="bottom-product">
-                <input id="idCategory" type="hidden" value="@ViewBag.CategoryId" />
                 @Html.Partial("CategoryPartial", Model)
                 <div class="clearfix"> </div>
             </div>

@@ -2,7 +2,7 @@
 @{ CultureInfo cul = CultureInfo.GetCultureInfo("vi-VN"); }
 @foreach (var item in Model)
 {
-    <div class="col-md-4 bottom-cd simpleCart_shelfItem" style="height: 350px;">
+    <div class="col-md-4 bottom-cd simpleCart_shelfItem" style="height: 350px; padding-top: 10px;">
         <div class="product-at ">
             <a href="@Url.Action("Index", "Product", new { id = item.Id })">
                 <img class="img-responsive image-product" style="max-height: 250px; max-width: 250px;" src="@item.Image.Path" alt="@item.Name">
