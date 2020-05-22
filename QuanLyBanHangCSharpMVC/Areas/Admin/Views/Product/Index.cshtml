@@ -71,7 +71,7 @@
             if('@TempData["SaveProduct"]')
             {
                 toastr.success('@TempData["SaveProduct"]');
-                @{ TempData["SaveProduct"] = ""; }
+                @{ TempData.Remove("SaveProduct"); }
             }
             $(".btnPage").first().addClass("page");
         });

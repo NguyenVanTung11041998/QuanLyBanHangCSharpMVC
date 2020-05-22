@@ -37,7 +37,7 @@ namespace QuanLyBanHangCSharpMVC.Areas.Admin.Controllers
             {
                 string password = PasswordMd5.HashPassword(account.Password);
                 Account accountLogin = await accountDAO.LoginAsync(account.Email, password);
-                if (accountLogin != null)
+                if (accountLogin != null && (accountLogin.AccountRole == AccountRole.Manager || accountLogin.AccountRole == AccountRole.Admin))
                 {
                     Session.Add(Constant.UserAdminSession, accountLogin);
                     var authTicket = new FormsAuthenticationTicket(1, $"{accountLogin.Email}", DateTime.Now, DateTime.Now.AddMinutes(20), account.RememberMe, account.Password, "/");
