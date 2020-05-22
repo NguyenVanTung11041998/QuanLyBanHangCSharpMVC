@@ -6,7 +6,7 @@
 @model List<Product>
 @section JsSection {
     <script type="text/javascript">
-        $(".btnActive").click(function (e) {
+        $("tbody").delegate(".btnActive", "click", function (e) {
             var btn = $(this);
             var id = btn.data("id");
             $.ajax({
